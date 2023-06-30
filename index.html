@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form id="payment-form">
+        <label for="card-number">Card Number</label>
+        <div id="card-number" class="input-field"></div>
+        
+        <label for="card-expiration">Expiration Date</label>
+        <div id="card-expiration" class="input-field"></div>
+        
+        <label for="card-cvc">CVC</label>
+        <div id="card-cvc" class="input-field"></div>
+        
+        <label for="card-name">Name on Card</label>
+        <input type="text" id="card-name" class="input-field">
+        
+        <button type="submit">Pay Now</button>
+      </form>
+      
+      <script src="https://js.stripe.com/v3/"></script>
+    
+    <script>
+  var stripe = Stripe('pk_test_51NOgDNG6w4l2W0cAzL4WAfosk27uacwQA8RpBmYHsEDlJV6ADu6TfGpY3Mp9FQIxHCmINwWjmtzOaE3dYwrS83tp006lu3TS4A');
+  var elements = stripe.elements();
+  
+  var cardNumberElement = elements.create('cardNumber');
+  cardNumberElement.mount('#card-number');
+  
+  var cardExpirationElement = elements.create('cardExpiry');
+  cardExpirationElement.mount('#card-expiration');
+  
+  var cardCvcElement = elements.create('cardCvc');
+  cardCvcElement.mount('#card-cvc');
+  
+  var form = document.getElementById('payment-form');
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    stripe.createPaymentMethod({
+      type: 'card',
+      card: cardNumberElement,
+      billing_details: {
+        name: document.getElementById('card-name').value
+      }
+    }).then(function(result) {
+      if (result.error) {
+        // Handle error
+      } else {
+        // Send the payment method to your server for further processing
+        // You can access the payment method with `result.paymentMethod`
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
